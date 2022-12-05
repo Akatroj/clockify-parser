@@ -18,10 +18,20 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "tsx": "^3.12.1"
+    "@js-temporal/polyfill": "^0.4.3",
+    "commander": "^9.4.1",
+    "console-clear": "^1.1.1",
+    "lodash-es": "^4.17.21",
+    "minimist": "^1.2.7",
+    "tsx": "^3.12.1",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
+    "@types/console-clear": "^1.1.0",
+    "@types/lodash-es": "^4.17.6",
+    "@types/minimist": "^1.2.2",
     "@types/node": "^18.11.10",
+    "type-fest": "^3.3.0",
     "typescript": "^4.9.3"
   }
 }
