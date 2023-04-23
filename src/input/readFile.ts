@@ -14,3 +14,9 @@ export async function readSheet(path: string) {
 
   return json;
 }
+
+export async function readJSON<T>(path: string) {
+  const file = await readFile(path, 'utf-8');
+
+  return JSON.parse(file) as T;
+}

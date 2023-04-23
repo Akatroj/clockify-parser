@@ -45,7 +45,9 @@ export function parseSheet(sheet: ClockifySheet[]) {
       ['Description']: description,
     } = row;
     if (startDate !== endDate)
-      throw new Error('Timers spanning multiple days are not supported');
+      throw new Error(
+        `Timers spanning multiple days are not supported. ${JSON.stringify(row)}`
+      );
 
     const [hours, minutes, seconds] = duration.split(':').map(Number);
     const parsedDuration = Temporal.Duration.from({
@@ -57,6 +59,5 @@ export function parseSheet(sheet: ClockifySheet[]) {
     addDuration(startDate, parsedDuration, description);
   }
 
-  console.log(JSON.stringify(timeStore));
   return timeStore;
 }

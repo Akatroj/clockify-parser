@@ -1,9 +1,9 @@
 import { Temporal } from '@js-temporal/polyfill';
 
 export type TimeByDay = {
-  [year in number]: {
-    [month in number]: {
-      [day in number]: {
+  [year: number]: {
+    [month: number]: {
+      [day: number]: {
         duration: Temporal.Duration;
         comment: string;
       };
@@ -11,13 +11,26 @@ export type TimeByDay = {
   };
 };
 
-export type YearMonthInterval = {
+type YearMonth = `${string}-${string}`;
+
+export type PaidLeave = {
+  [yearMonth: YearMonth]: number;
+};
+
+export type PartTimeInterval = {
   from: Temporal.PlainYearMonth;
   to: Temporal.PlainYearMonth;
+  value: number;
+};
+
+export type PartTimeInputInterval = {
+  from: YearMonth;
+  to: YearMonth;
+  value: number;
 };
 
 export type HoursByMonth = {
-  [year in string]: {
-    [month in string]: number;
+  [year: string]: {
+    [month: string]: number;
   };
 };

@@ -2,12 +2,27 @@ import { Temporal } from '@js-temporal/polyfill';
 
 import workhours from '../../resources/workhours.json';
 
-import type { HoursByMonth, MonthlyOutput, TimeByDay, YearMonthInterval } from '../types';
+import type {
+  HoursByMonth,
+  MonthlyOutput,
+  TimeByDay,
+  PartTimeInterval,
+  PaidLeave,
+} from '../types';
 
 const usableWorkhours: HoursByMonth = workhours;
 
-export function toMonthly(durations: TimeByDay, partTime?: YearMonthInterval[]) {
+export function toMonthly(
+  durations: TimeByDay,
+  partTime?: PartTimeInterval[],
+  paidLeave?: PaidLeave
+) {
   const byMonthReport: Record<string, MonthlyOutput> = {};
+
+  const sum = {
+    expectedTime: new Temporal.Duration(0),
+    yourTime: new Temporal.Duration(0),
+  };
 
   for (const [year, months] of Object.entries(durations)) {
     for (const [month, days] of Object.entries(months)) {
@@ -16,34 +31,45 @@ export function toMonthly(durations: TimeByDay, partTime?: YearMonthInterval[]) 
         new Temporal.Duration()
       );
 
-      const expectedTime = Temporal.Duration.from({
-        hours: isInInterval(
-          Temporal.PlainYearMonth.from({ year: +year, month: +month }),
-          partTime
-        )
-          ? Math.round((usableWorkhours[year][month] * 3) / 5)
-          : usableWorkhours[year][month],
+      const vacation = Temporal.Duration.from({
+        hours: 8 * (paidLeave?.[`${year}-${month}`] ?? 0),
       });
 
+      const partTimeInterval = getIntervalForDate(
+        Temporal.PlainYearMonth.from({ year: +year, month: +month }),
+        partTime
+      );
+
+      const expectedTime = Temporal.Duration.from({
+        hours: partTimeInterval
+          ? Math.round(usableWorkhours[year][month] * partTimeInterval.value)
+          : usableWorkhours[year][month],
+      }).subtract(vacation);
+
       byMonthReport[`${month}/${year}`] = {
+        vacation: format(vacation),
         yourTime: format(yourTime),
         expectedTime: format(expectedTime),
         balance: format(yourTime.subtract(expectedTime)),
       };
+
+      sum.expectedTime = sum.expectedTime.add(expectedTime);
+      sum.yourTime = sum.yourTime.add(yourTime);
     }
   }
 
   console.log(JSON.stringify(byMonthReport));
 
+  console.log(`BALANCE\n\n\n ${sum.yourTime.subtract(sum.expectedTime).total('hours')}`);
+
   return byMonthReport;
 }
 
-function isInInterval(
+function getIntervalForDate(
   date: Temporal.PlainYearMonth,
-  intervals: YearMonthInterval[] | undefined
+  intervals: PartTimeInterval[] | undefined
 ) {
-  if (!intervals) return false;
-  return intervals.some(({ from, to }) => between(date, from, to));
+  return intervals?.find(({ from, to }) => between(date, from, to));
 }
 
 function between(
@@ -61,7 +87,11 @@ function between(
 
 function format(duration: Temporal.Duration) {
   const numberToStr = (n: number) => n.toFixed(0).padStart(2, '0');
-  return `${numberToStr(duration.hours)}:${numberToStr(
-    Math.abs(duration.minutes)
-  )}:${numberToStr(Math.abs(duration.seconds))}`;
+  const [hours, minutes, seconds] = [
+    duration.hours,
+    Math.abs(duration.minutes),
+    Math.abs(duration.seconds),
+  ].map(numberToStr);
+
+  return `${hours}:${minutes}:${seconds}`;
 }

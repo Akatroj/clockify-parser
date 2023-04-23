@@ -5,3 +5,5 @@ dist
 .vscode
 
 data
+
+.env
