@@ -32,7 +32,7 @@ export function toMonthly(
       );
 
       const vacation = Temporal.Duration.from({
-        hours: 8 * (paidLeave?.[`${year}-${month}`] ?? 0),
+        hours: 8 * (paidLeave?.[`${year}-${month.padStart(2, '0')}`] ?? 0),
       });
 
       const partTimeInterval = getIntervalForDate(
