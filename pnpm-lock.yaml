@@ -1,6 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@commander-js/extra-typings': ^12.1.0
   '@js-temporal/polyfill': ^0.4.4
   '@types/console-clear': ^1.1.4
   '@types/lodash-es': ^4.17.12
@@ -19,6 +20,7 @@ specifiers:
   xlsx: ^0.18.5
 
 dependencies:
+  '@commander-js/extra-typings': 12.1.0_commander@12.1.0
   '@js-temporal/polyfill': 0.4.4
   clockify-ts: github.com/polygon-software/clockify-ts/8133fee252a1a903c0f3dc81cb4df4269975f3c0
   commander: 12.1.0
@@ -39,6 +41,14 @@ devDependencies:
   typescript: 5.4.5
 
 packages:
+
+  /@commander-js/extra-typings/12.1.0_commander@12.1.0:
+    resolution: {integrity: sha512-wf/lwQvWAA0goIghcb91dQYpkLBcyhOhQNqG/VgWhnKzgt+UOMvra7EX/2fv70arm5RW+PUHoQHHDa6/p77Eqg==}
+    peerDependencies:
+      commander: ~12.1.0
+    dependencies:
+      commander: 12.1.0
+    dev: false
 
   /@esbuild/aix-ppc64/0.21.5:
     resolution: {integrity: sha512-1SDgH6ZSPTlggy1yI6+Dbkiz8xzpHJEVAlF/AM1tHPLsf5STom9rwtjE4hKAF20FfXXNTFqEYXyJNWh1GiZedQ==}

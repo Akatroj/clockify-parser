@@ -18,6 +18,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@commander-js/extra-typings": "^12.1.0",
     "@js-temporal/polyfill": "^0.4.4",
     "clockify-ts": "github:polygon-software/clockify-ts#8133fee252a1a903c0f3dc81cb4df4269975f3c0",
     "commander": "^12.1.0",

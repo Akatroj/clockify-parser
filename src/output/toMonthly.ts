@@ -9,6 +9,7 @@ import type {
   PartTimeInterval,
   PaidLeave,
 } from '../types';
+import { formatDuration } from '../utils';
 
 const usableWorkhours: HoursByMonth = workhours;
 
@@ -47,10 +48,10 @@ export function toMonthly(
       }).subtract(vacation);
 
       byMonthReport[`${month}/${year}`] = {
-        vacation: format(vacation),
-        yourTime: format(yourTime),
-        expectedTime: format(expectedTime),
-        balance: format(yourTime.subtract(expectedTime)),
+        vacation: formatDuration(vacation),
+        yourTime: formatDuration(yourTime),
+        expectedTime: formatDuration(expectedTime),
+        balance: formatDuration(yourTime.subtract(expectedTime)),
       };
 
       sum.expectedTime = sum.expectedTime.add(expectedTime);
@@ -83,15 +84,4 @@ function between(
     Temporal.PlainYearMonth.compare(date, end) < 0;
   console.log(retval);
   return retval;
-}
-
-function format(duration: Temporal.Duration) {
-  const numberToStr = (n: number) => n.toFixed(0).padStart(2, '0');
-  const [hours, minutes, seconds] = [
-    duration.hours,
-    Math.abs(duration.minutes),
-    Math.abs(duration.seconds),
-  ].map(numberToStr);
-
-  return `${hours}:${minutes}:${seconds}`;
 }

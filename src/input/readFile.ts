@@ -1,5 +1,5 @@
 import { read, utils } from 'xlsx';
-import { readFile } from 'fs/promises';
+import { readFile, stat } from 'fs/promises';
 import { parse } from 'csv-parse';
 
 import type { ClockifySheet } from '../types';
@@ -36,4 +36,10 @@ export async function parseCSV(path: string) {
   });
 
   return records;
+}
+
+export function exists(path: string) {
+  return stat(path)
+    .then(() => true)
+    .catch(() => false);
 }
