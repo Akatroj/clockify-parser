@@ -1,5 +1,6 @@
 export type ClockifyDate = `${string}/${string}/${string}`;
 export type ClockifyTime = `${string}:${string}:${string}`;
+export type ClockifyDuration = `${string}:${string}:${string}`;
 
 export type ClockifySheet = {
   Project?: string;
@@ -15,6 +16,6 @@ export type ClockifySheet = {
   ['Start Time']: ClockifyTime;
   ['End Date']: ClockifyDate;
   ['End Time']: ClockifyTime;
-  ['Duration (h)']: ClockifyTime;
+  ['Duration (h)']: ClockifyDuration;
   ['Duration (decimal)']: number;
 };

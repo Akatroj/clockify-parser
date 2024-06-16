@@ -1,18 +1,19 @@
 import { Temporal } from '@js-temporal/polyfill';
 
-import type { ClockifySheet, ClockifyDate, TimeByDay } from '../types';
+import type { ClockifySheet, TimeByDay } from '../types';
+import { parseClockifyDate, parseClockifyDuration } from '../utils';
 
 function useTimeStore() {
   const timeStore: TimeByDay = {};
 
   const addDuration = (
-    date: ClockifyDate,
+    date: Temporal.PlainDate,
     duration: Temporal.Duration,
     description: string | undefined
   ) => {
     const actualDescription = description || 'Unspecified';
 
-    const [day, month, year] = date.split('/').map(Number);
+    const [day, month, year] = [date.day, date.month, date.year];
 
     // init if undefined
     timeStore[year] ??= {};
@@ -34,7 +35,7 @@ function useTimeStore() {
   return { timeStore, addDuration };
 }
 
-export function parseSheet(sheet: ClockifySheet[]) {
+export function parseDetailedReport(sheet: ClockifySheet[]) {
   const { timeStore, addDuration } = useTimeStore();
 
   for (const row of sheet) {
@@ -44,19 +45,17 @@ export function parseSheet(sheet: ClockifySheet[]) {
       ['Duration (h)']: duration,
       ['Description']: description,
     } = row;
-    if (startDate !== endDate)
+
+    const parsedDuration = parseClockifyDuration(duration);
+
+    const [parsedStartDate, parsedEndDate] = [startDate, endDate].map(parseClockifyDate);
+
+    if (!parsedStartDate.equals(parsedEndDate))
       throw new Error(
         `Timers spanning multiple days are not supported. ${JSON.stringify(row)}`
       );
 
-    const [hours, minutes, seconds] = duration.split(':').map(Number);
-    const parsedDuration = Temporal.Duration.from({
-      hours,
-      minutes,
-      seconds,
-    });
-
-    addDuration(startDate, parsedDuration, description);
+    addDuration(parsedStartDate, parsedDuration, description);
   }
 
   return timeStore;

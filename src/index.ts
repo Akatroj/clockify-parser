@@ -1,8 +1,8 @@
-import { toTemporalInstant } from '@js-temporal/polyfill';
+import { Temporal, toTemporalInstant } from '@js-temporal/polyfill';
 import { program } from 'commander';
 import clear from 'console-clear';
 
-import { parseIntervals, parseSheet, readJSON, readSheet } from './input';
+import { parseIntervals, parseDetailedReport, parseJSON, parseXLSX } from './input';
 import { saveJSON, toMonthly, toXLSX } from './output';
 
 import type { Options, PaidLeave, PartTimeInputInterval } from './types';
@@ -13,29 +13,33 @@ Date.prototype.toTemporalInstant = toTemporalInstant;
 
 program
   .requiredOption('-i, --input <path>', 'Path to the XLSX file')
-  .option('--part-time-ranges <path>', 'Path to a JSON file containing part time ranges')
-  .option('--paid-leave <path>', 'Path to a JSON file containing paid leave days')
+  .option(
+    '--part-time-ranges <path>',
+    'Path to a JSON file containing part time ranges',
+    './data/partTime.json'
+  )
+  .option(
+    '--paid-leave <path>',
+    'Path to a JSON file containing paid leave days',
+    './data/paidLeave.json'
+  )
   .parse();
+
+clear();
 
 const { input, partTimeRanges, paidLeave } = program.opts<Options>();
 
 const partTime = partTimeRanges
-  ? await readJSON<PartTimeInputInterval[]>(partTimeRanges).then(parseIntervals)
+  ? await parseJSON<PartTimeInputInterval[]>(partTimeRanges).then(parseIntervals)
   : undefined;
 
-const vacation = paidLeave ? await readJSON<PaidLeave>(paidLeave) : undefined;
+const vacation = paidLeave ? await parseJSON<PaidLeave>(paidLeave) : undefined;
 
-clear();
-const clockifySheet = await readSheet(input);
-const durations = parseSheet(clockifySheet);
+const clockifySheet = await parseXLSX(input);
+const parsedDurations = parseDetailedReport(clockifySheet);
 
-const report = toMonthly(durations, partTime, vacation);
+const report = toMonthly(parsedDurations, partTime, vacation);
 
 toXLSX(report);
 
-saveJSON(durations, 'timeStore');
-
-// getDetailedReport(
-//   Temporal.PlainDate.from('2022-03-14'),
-//   Temporal.PlainDate.from('2023-04-22')
-// );
+saveJSON(parsedDurations, 'timeStore');
