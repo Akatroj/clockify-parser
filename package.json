@@ -18,22 +18,23 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@js-temporal/polyfill": "^0.4.3",
-    "clockify-ts": "git+https://github.com/polygon-software/clockify-ts.git",
-    "commander": "^10.0.1",
+    "@js-temporal/polyfill": "^0.4.4",
+    "clockify-ts": "github:polygon-software/clockify-ts#8133fee252a1a903c0f3dc81cb4df4269975f3c0",
+    "commander": "^12.1.0",
     "console-clear": "^1.1.1",
-    "dotenv": "^16.0.3",
+    "csv-parse": "^5.5.6",
+    "dotenv": "^16.4.5",
     "lodash-es": "^4.17.21",
     "minimist": "^1.2.8",
-    "tsx": "^3.12.6",
+    "tsx": "^4.15.5",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
-    "@types/console-clear": "^1.1.0",
-    "@types/lodash-es": "^4.17.7",
-    "@types/minimist": "^1.2.2",
-    "@types/node": "^18.16.0",
-    "type-fest": "^3.8.0",
-    "typescript": "^5.0.4"
+    "@types/console-clear": "^1.1.4",
+    "@types/lodash-es": "^4.17.12",
+    "@types/minimist": "^1.2.5",
+    "@types/node": "^20.14.2",
+    "type-fest": "^4.20.1",
+    "typescript": "^5.4.5"
   }
 }
