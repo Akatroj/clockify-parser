@@ -4,6 +4,6 @@ interface Date {
 
 namespace NodeJS {
   interface ProcessEnv {
-    CLOCKIFY_API_KEY: string;
+    CLOCKIFY_API_KEY?: string;
   }
 }
