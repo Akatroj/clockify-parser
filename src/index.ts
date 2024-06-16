@@ -2,7 +2,7 @@ import { Temporal, toTemporalInstant } from '@js-temporal/polyfill';
 import { program } from 'commander';
 import clear from 'console-clear';
 
-import { parseIntervals, parseDetailedReport, parseJSON, parseXLSX } from './input';
+import { parseIntervals, parseDetailedReport, parseJSON, parseXLSX, parseCSV } from './input';
 import { saveJSON, toMonthly, toXLSX } from './output';
 
 import type { Options, PaidLeave, PartTimeInputInterval } from './types';
@@ -12,7 +12,7 @@ import 'dotenv/config';
 Date.prototype.toTemporalInstant = toTemporalInstant;
 
 program
-  .requiredOption('-i, --input <path>', 'Path to the XLSX file')
+  .requiredOption('-i, --input <path>', 'Path to the file with Clockify data. CSV or XLSX.')
   .option(
     '--part-time-ranges <path>',
     'Path to a JSON file containing part time ranges',
@@ -35,7 +35,8 @@ const partTime = partTimeRanges
 
 const vacation = paidLeave ? await parseJSON<PaidLeave>(paidLeave) : undefined;
 
-const clockifySheet = await parseXLSX(input);
+const clockifySheet =
+  input.split('.').at(-1) === 'csv' ? await parseCSV(input) : await parseXLSX(input);
 const parsedDurations = parseDetailedReport(clockifySheet);
 
 const report = toMonthly(parsedDurations, partTime, vacation);
