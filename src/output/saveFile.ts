@@ -1,6 +1,6 @@
 import { writeFile } from 'fs/promises';
-import { utils, write } from 'xlsx';
-import type { WorkBook } from 'xlsx';
+import { utils, write } from '@e965/xlsx';
+import type { WorkBook } from '@e965/xlsx';
 import type { MonthlyOutput } from '../types';
 
 export async function toXLSX(data: Record<string, MonthlyOutput>) {

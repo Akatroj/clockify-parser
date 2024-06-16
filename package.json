@@ -19,6 +19,7 @@
   "license": "ISC",
   "dependencies": {
     "@commander-js/extra-typings": "^12.1.0",
+    "@e965/xlsx": "0.20.2-released.0",
     "@js-temporal/polyfill": "^0.4.4",
     "clockify-ts": "github:polygon-software/clockify-ts#8133fee252a1a903c0f3dc81cb4df4269975f3c0",
     "commander": "^12.1.0",
@@ -27,8 +28,7 @@
     "dotenv": "^16.4.5",
     "lodash-es": "^4.17.21",
     "minimist": "^1.2.8",
-    "tsx": "^4.15.5",
-    "xlsx": "^0.18.5"
+    "tsx": "^4.15.5"
   },
   "devDependencies": {
     "@types/console-clear": "^1.1.4",

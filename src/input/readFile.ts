@@ -1,4 +1,4 @@
-import { read, utils } from 'xlsx';
+import { read, utils } from '@e965/xlsx';
 import { readFile, stat } from 'fs/promises';
 import { parse } from 'csv-parse';
 
