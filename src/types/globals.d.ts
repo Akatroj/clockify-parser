@@ -1,9 +1,16 @@
-interface Date {
-  toTemporalInstant: (this: Date) => Temporal.Instant;
-}
+import type { Temporal } from '@js-temporal/polyfill';
+import type { ApiConfig } from './api';
 
-namespace NodeJS {
-  interface ProcessEnv {
-    CLOCKIFY_API_KEY?: string;
+type Env = Partial<ApiConfig> & {
+  // additional keys
+};
+
+declare global {
+  interface Date {
+    toTemporalInstant: (this: Date) => Temporal.Instant;
+  }
+
+  namespace NodeJS {
+    interface ProcessEnv extends Env {}
   }
 }

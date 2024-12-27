@@ -7,15 +7,15 @@ import {
   RequestDetailedReportUserStatusFilterEnum,
   default as brokenShitLibrary,
 } from 'clockify-ts';
+import { getApiConfig } from '../utils';
 
 // @ts-expect-error broken shit library
 const Clockify = brokenShitLibrary.default as typeof brokenShitLibrary;
 
-const TEAM_WORKSPACE_ID = 'TEAM_WORKSPACE_ID';
-const ME = 'ME_ID';
-
 export async function getDetailedReport(from: Temporal.PlainDate, to: Temporal.PlainDate) {
-  const clockify = new Clockify('API_TOKEN');
+  const { CLOCKIFY_API_KEY, TEAM_WORKSPACE_ID, USER_ID } = getApiConfig();
+
+  const clockify = new Clockify(CLOCKIFY_API_KEY);
 
   const [dateRangeStart, dateRangeEnd] = [from, to].map(
     plainDate =>
@@ -30,7 +30,7 @@ export async function getDetailedReport(from: Temporal.PlainDate, to: Temporal.P
     dateRangeStart,
     dateRangeEnd,
     users: {
-      ids: [ME],
+      ids: [USER_ID],
       contains: RequestDetailedReportContainsFilterEnum.contains,
       status: RequestDetailedReportUserStatusFilterEnum.all,
     },
