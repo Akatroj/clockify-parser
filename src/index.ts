@@ -1,30 +1,24 @@
-import { toTemporalInstant } from '@js-temporal/polyfill';
+import { Temporal, toTemporalInstant } from '@js-temporal/polyfill';
 import { program } from '@commander-js/extra-typings';
 import clear from 'console-clear';
 
-import {
-  parseIntervals,
-  parseDetailedReport,
-  parseJSON,
-  parseXLSX,
-  parseCSV,
-  exists,
-} from './input';
-import { saveJSON, toMonthly, toXLSX } from './output';
-
-import type {
-  ClockifySheet,
-  PaidLeave,
-  PartTimeInputInterval,
-  PartTimeInterval,
-} from './types';
-
-import 'dotenv/config';
+import { getDetailedReport } from 'api/clockifyApi';
+import type { ClockifyReport } from 'types/clockify';
+import type { PaidLeave, PartTimeInterval } from 'types/time';
+import { readCSV } from 'input/clockifyReport/readReport';
+import { parseDetailedReport } from 'input/clockifyReport/parseReport';
+import { toMonthly } from 'output/toMonthly';
+import { saveJSON, saveXLSX } from 'output/saveFile';
+import { getApiConfig } from 'utils/configureEnv';
+import { loadFiles } from 'input/load';
 
 Date.prototype.toTemporalInstant = toTemporalInstant;
 
 const typedProgram = program
-  .requiredOption('-i, --input <path>', 'Path to the file with Clockify data. CSV or XLSX.')
+  .option(
+    '-i, --input <path>',
+    'Path to the file with Clockify data. CSV or XLSX. Optional - will use api if not provided.'
+  )
   .option(
     '--part-time-ranges <path>',
     'Path to a JSON file containing part time ranges',
@@ -47,48 +41,27 @@ async function main() {
     paidLeave: paidLeavePath,
   } = typedProgram.opts();
 
-  const { clockifySheet, partTime, vacation } = await loadFiles(
-    inputPath,
-    partTimePath,
-    paidLeavePath
-  );
-
-  const parsedDurations = parseDetailedReport(clockifySheet);
-
-  const report = toMonthly(parsedDurations, partTime, vacation);
-
-  await toXLSX(report);
-
-  await saveJSON(parsedDurations, 'timeStore');
-}
-
-export async function loadFiles(
-  reportPath: string,
-  partTimePath: string,
-  paidLeavePath: string
-) {
-  let clockifySheet: ClockifySheet[],
+  let clockifySheet: ClockifyReport[] | undefined,
     partTime: PartTimeInterval[] | undefined,
     vacation: PaidLeave | undefined;
 
-  switch (reportPath.split('.').at(-1)) {
-    case 'csv':
-      clockifySheet = await parseCSV(reportPath);
-      break;
-    case 'xlsx':
-      clockifySheet = await parseXLSX(reportPath);
-      break;
-    default:
-      throw new Error('Invalid file extension');
+  [clockifySheet, partTime, vacation] = await loadFiles(
+    partTimePath,
+    paidLeavePath,
+    inputPath
+  );
+
+  if (!clockifySheet) {
+    clockifySheet = await getDetailedReport(
+      new Temporal.PlainDate(2024, 1, 1),
+      new Temporal.PlainDate(2024, 12, 26),
+      'csv',
+      await getApiConfig()
+    ).then(readCSV);
   }
 
-  if (await exists(partTimePath)) {
-    partTime = await parseJSON<PartTimeInputInterval[]>(partTimePath).then(parseIntervals);
-  } else console.log('No part time intervals provided');
-
-  if (await exists(paidLeavePath)) {
-    vacation = await parseJSON<PaidLeave>(paidLeavePath);
-  } else console.log('No paid leave days provided');
-
-  return { clockifySheet, partTime, vacation };
+  const parsedDurations = parseDetailedReport(clockifySheet!);
+  const report = toMonthly(parsedDurations, partTime, vacation);
+  await saveXLSX(report);
+  await saveJSON(parsedDurations, 'timeStore');
 }

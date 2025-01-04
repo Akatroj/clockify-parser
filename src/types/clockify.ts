@@ -2,7 +2,7 @@ export type ClockifyDate = `${string}/${string}/${string}`;
 export type ClockifyTime = `${string}:${string}:${string}`;
 export type ClockifyDuration = `${string}:${string}:${string}`;
 
-export type ClockifySheet = {
+export type ClockifyReport = {
   Project?: string;
   Client?: string;
   Description?: string;

@@ -1,5 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill';
-import type { ClockifyDate, ClockifyDuration, ClockifyTime } from '../types';
+import type { ClockifyDate, ClockifyDuration, ClockifyTime } from 'types/clockify';
 
 export function parseClockifyDate(date: ClockifyDate): Temporal.PlainDate {
   const [day, month, year] = date.split('/').map(Number);

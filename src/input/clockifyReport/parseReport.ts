@@ -1,7 +1,8 @@
 import { Temporal } from '@js-temporal/polyfill';
 
-import type { ClockifySheet, TimeByDay } from '../types';
-import { parseClockifyDate, parseClockifyDuration } from '../utils';
+import type { ClockifyReport } from 'types/clockify';
+import type { TimeByDay } from 'types/time';
+import { parseClockifyDate, parseClockifyDuration } from 'utils/dates';
 
 function useTimeStore() {
   const timeStore: TimeByDay = {};
@@ -35,7 +36,7 @@ function useTimeStore() {
   return { timeStore, addDuration };
 }
 
-export function parseDetailedReport(sheet: ClockifySheet[]) {
+export function parseDetailedReport(sheet: ClockifyReport[]): TimeByDay {
   const { timeStore, addDuration } = useTimeStore();
 
   for (const row of sheet) {

@@ -1,15 +1,9 @@
 import { Temporal } from '@js-temporal/polyfill';
 
 import workhours from '../../resources/workhours.json';
-
-import type {
-  HoursByMonth,
-  MonthlyOutput,
-  TimeByDay,
-  PartTimeInterval,
-  PaidLeave,
-} from '../types';
-import { formatDuration } from '../utils';
+import type { HoursByMonth, PaidLeave, PartTimeInterval, TimeByDay } from 'types/time';
+import type { MonthlyOutput } from 'types/outputs';
+import { formatDuration } from 'utils/dates';
 
 const usableWorkhours: HoursByMonth = workhours;
 

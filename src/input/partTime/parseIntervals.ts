@@ -1,7 +1,7 @@
 import { Temporal } from '@js-temporal/polyfill';
-import { PaidLeave, PartTimeInputInterval, PartTimeInterval } from '../types';
+import type { PartTimeInputInterval, PartTimeInterval } from 'types/time';
 
-export function parseIntervals(intervals: PartTimeInputInterval[]) {
+export function parseIntervals(intervals: PartTimeInputInterval[]): PartTimeInterval[] {
   return intervals.map<PartTimeInterval>(interval => {
     const { from: fromUnparsed, to: toUnparsed, value } = interval;
 
