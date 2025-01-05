@@ -56,7 +56,7 @@ export function toMonthly(
   console.log(JSON.stringify(byMonthReport));
 
   const totalBalance = sum.yourTime.subtract(sum.expectedTime);
-  console.log('TOTAL BALANCE\n\n');
+  console.log('\nTOTAL BALANCE\n\n');
   console.log(formatDuration(totalBalance));
 
   return byMonthReport;
@@ -74,10 +74,8 @@ function between(
   start: Temporal.PlainYearMonth,
   end: Temporal.PlainYearMonth
 ) {
-  console.log(`checking if ${date} between ${start} and ${end}`);
   const retval =
     Temporal.PlainYearMonth.compare(date, start) >= 0 &&
     Temporal.PlainYearMonth.compare(date, end) < 0;
-  console.log(retval);
   return retval;
 }

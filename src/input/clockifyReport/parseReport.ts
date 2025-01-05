@@ -3,6 +3,7 @@ import { Temporal } from '@js-temporal/polyfill';
 import type { ClockifyReport } from 'types/clockify';
 import type { TimeByDay } from 'types/time';
 import { parseClockifyDate, parseClockifyDuration, parseClockifyTime } from 'utils/dates';
+import { formatRow } from 'utils/debug';
 
 function useTimeStore() {
   const timeStore: TimeByDay = {};
@@ -58,11 +59,11 @@ export function parseDetailedReport(sheet: ClockifyReport[]): TimeByDay {
       addDuration(parsedStartDate, parsedDuration, description);
       continue;
     } else {
-      console.log('Found a timer spanning multiple days:', JSON.stringify(row));
+      console.log('Found a timer spanning multiple days:', formatRow(row));
 
       if (!parsedEndDate.equals(parsedStartDate.add({ days: 1 })))
         throw new Error(
-          `Timers spanning more than 2 days are not supported. ${JSON.stringify(row)}`
+          `Timers spanning more than 2 days are not supported. ${formatRow(row)}`
         );
 
       const midnight = Temporal.PlainTime.from({ hour: 0, minute: 0, second: 0 });
