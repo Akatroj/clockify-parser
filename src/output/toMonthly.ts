@@ -55,7 +55,9 @@ export function toMonthly(
 
   console.log(JSON.stringify(byMonthReport));
 
-  console.log(`BALANCE\n\n\n ${sum.yourTime.subtract(sum.expectedTime).total('hours')}`);
+  const totalBalance = sum.yourTime.subtract(sum.expectedTime);
+  console.log('TOTAL BALANCE\n\n');
+  console.log(formatDuration(totalBalance));
 
   return byMonthReport;
 }

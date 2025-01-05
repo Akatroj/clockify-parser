@@ -2,7 +2,7 @@ import { Temporal } from '@js-temporal/polyfill';
 
 import type { ClockifyReport } from 'types/clockify';
 import type { TimeByDay } from 'types/time';
-import { parseClockifyDate, parseClockifyDuration } from 'utils/dates';
+import { parseClockifyDate, parseClockifyDuration, parseClockifyTime } from 'utils/dates';
 
 function useTimeStore() {
   const timeStore: TimeByDay = {};
@@ -45,18 +45,47 @@ export function parseDetailedReport(sheet: ClockifyReport[]): TimeByDay {
       ['End Date']: endDate,
       ['Duration (h)']: duration,
       ['Description']: description,
+      ['Start Time']: startTime,
+      ['End Time']: endTime,
     } = row;
 
     const parsedDuration = parseClockifyDuration(duration);
 
     const [parsedStartDate, parsedEndDate] = [startDate, endDate].map(parseClockifyDate);
+    const [parsedStartTime, parsedEndTime] = [startTime, endTime].map(parseClockifyTime);
 
-    if (!parsedStartDate.equals(parsedEndDate))
-      throw new Error(
-        `Timers spanning multiple days are not supported. ${JSON.stringify(row)}`
-      );
+    if (parsedStartDate.equals(parsedEndDate)) {
+      addDuration(parsedStartDate, parsedDuration, description);
+      continue;
+    } else {
+      console.log('Found a timer spanning multiple days:', JSON.stringify(row));
 
-    addDuration(parsedStartDate, parsedDuration, description);
+      if (!parsedEndDate.equals(parsedStartDate.add({ days: 1 })))
+        throw new Error(
+          `Timers spanning more than 2 days are not supported. ${JSON.stringify(row)}`
+        );
+
+      const midnight = Temporal.PlainTime.from({ hour: 0, minute: 0, second: 0 });
+
+      const [durationTillEndOfDay, durationFromStartOfDay] = [
+        parsedStartTime.until(midnight).add({ days: 1 }),
+        parsedEndTime.since(midnight),
+      ];
+
+      if (
+        durationTillEndOfDay.add(durationFromStartOfDay).total('seconds') !==
+        parsedDuration.total('seconds')
+      ) {
+        throw new Error(
+          `Duration mismatch: ${durationTillEndOfDay
+            .add(durationFromStartOfDay)
+            .total('seconds')} !== ${parsedDuration.total('seconds')}. Contact the developer.`
+        );
+      }
+
+      addDuration(parsedStartDate, durationTillEndOfDay, description);
+      addDuration(parsedEndDate, durationFromStartOfDay, description);
+    }
   }
 
   return timeStore;
