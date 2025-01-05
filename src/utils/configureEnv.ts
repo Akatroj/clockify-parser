@@ -66,6 +66,8 @@ async function getUserAndWorkspaceIds(apiKey: string): Promise<[string, string]>
     })),
   });
 
+  console.log('Your workspace id is:', workspace);
+
   return [userId, workspace];
 }
 
