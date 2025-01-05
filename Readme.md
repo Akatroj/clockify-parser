@@ -3,12 +3,13 @@ This script parses time tracking reports generated from the Clockify app and cal
 
 ## Features
 * Parses Clockify reports in CSV and XLSX formats.
+* Fetches reports using Clockify API.
 * Calculates total work time per month.
-* Compares work time with expected work time (workhours.json, taken from https://www.kalendarzswiat.pl/wymiar_czasu_pracy/2024).
+* Compares work time with expected work time (workhours.json, taken from https://www.kalendarzswiat.pl/wymiar_czasu_pracy/2025).
 * Accounts for part-time schedules defined in a JSON file (partTime.json).
 * Recognizes paid leave periods specified in a JSON file (paidLeave.json).
 
-There are example json files provided in `/examples/` dir, so you can know figure out the structure.
+There are example json files provided in `/examples/` dir, so you can figure out the structure.
 
 Usage:
 ```
@@ -21,6 +22,25 @@ By default, the script will look for json files in `./data/partTime.json` and `.
 
 Example usage:
 
+* Fetch report through api
+
+```cmd
+pnpm start api --start 2024-01-01 --end 2024-12-31
+```
+
+or, with custom paid leave file location:
+
+```cmd
+pnpm start api --start 2024-01-01 --end 2024-12-31 --part-time-ranges ./data/partTime.json --paid-leave ./data/paidLeave.json
+```
+
+* Calculate using local report file:
+
+```cmd
+pnpm start -i ./data/Clockify_Time_Report_Detailed_01_07_2022-23_04_2023.xlsx
+```
+
+or, with custom paid leave file location:
 
 ```cmd
 pnpm start -i ./data/Clockify_Time_Report_Detailed_01_07_2022-23_04_2023.xlsx  --part-time-ranges ./data/partTime.json --paid-leave ./data/paidLeave.json

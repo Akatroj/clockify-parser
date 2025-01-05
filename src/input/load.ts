@@ -5,16 +5,12 @@ import type { ClockifyReport } from 'types/clockify';
 import { readFile } from 'node:fs/promises';
 import { readCSV, readXLSX } from './clockifyReport/readReport';
 
-export function loadFiles(
-  partTimePath: string,
-  paidLeavePath: string,
-  reportPath: string | undefined
-) {
+export function loadFiles(partTimePath: string, paidLeavePath: string, reportPath?: string) {
   const partTimeFile = loadPartTimeFile(partTimePath);
   const vacationFile = loadVacationFile(paidLeavePath);
   const clockifyFile = reportPath ? loadClockifyFile(reportPath) : undefined;
 
-  return Promise.all([clockifyFile, partTimeFile, vacationFile]);
+  return Promise.all([partTimeFile, vacationFile, clockifyFile]);
 }
 
 async function loadPartTimeFile(

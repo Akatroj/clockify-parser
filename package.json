@@ -7,7 +7,6 @@
   "scripts": {
     "build": "tsc",
     "check": "tsc --noEmit",
-    "prestart": "npm run check",
     "start": "tsx .",
     "dev": "tsx ."
   },
@@ -18,16 +17,17 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@commander-js/extra-typings": "^12.1.0",
+    "@commander-js/extra-typings": "^13.0.0",
     "@e965/xlsx": "0.20.3",
     "@inquirer/prompts": "^7.2.1",
     "@js-temporal/polyfill": "^0.4.4",
     "clockify-ts": "github:polygon-software/clockify-ts#8133fee252a1a903c0f3dc81cb4df4269975f3c0",
-    "commander": "^12.1.0",
+    "commander": "^13.0.0",
     "console-clear": "^1.1.1",
     "csv-parse": "^5.6.0",
     "dotenv": "^16.4.7",
     "envfile": "^7.1.0",
+    "inquirer-datepicker-prompt": "^0.4.3",
     "lodash-es": "^4.17.21",
     "minimist": "^1.2.8",
     "tsx": "^4.19.2"
@@ -36,7 +36,7 @@
     "@types/console-clear": "^1.1.4",
     "@types/lodash-es": "^4.17.12",
     "@types/minimist": "^1.2.5",
-    "@types/node": "^22.10.2",
+    "@types/node": "^22.10.5",
     "type-fest": "^4.31.0",
     "typescript": "^5.7.2"
   }
